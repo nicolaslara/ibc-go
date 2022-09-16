@@ -295,6 +295,14 @@ func (s *E2ETestSuite) Transfer(ctx context.Context, chain *cosmos.CosmosChain, 
 	return s.BroadcastMessages(ctx, chain, user, msg)
 }
 
+// TransferWithMetadata broadcasts a MsgTransfer message with metadata.
+func (s *E2ETestSuite) TransferWithMetadata(ctx context.Context, chain *cosmos.CosmosChain, user *ibc.Wallet,
+	portID, channelID string, token sdk.Coin, sender, receiver string, timeoutHeight clienttypes.Height, timeoutTimestamp uint64, metadata []byte,
+) (sdk.TxResponse, error) {
+	msg := transfertypes.NewMsgTransferWithMetadata(portID, channelID, token, sender, receiver, timeoutHeight, timeoutTimestamp, metadata)
+	return s.BroadcastMessages(ctx, chain, user, msg)
+}
+
 // StartRelayer starts the given relayer.
 func (s *E2ETestSuite) StartRelayer(relayer ibc.Relayer) {
 	if s.startRelayerFn == nil {
@@ -377,6 +385,7 @@ func (s *E2ETestSuite) AssertValidTxResponse(resp sdk.TxResponse) {
 	if respLogsMsg == emptyLogs {
 		respLogsMsg = resp.RawLog
 	}
+	fmt.Println("DEBUG:", respLogsMsg)
 	s.Require().NotEqual(int64(0), resp.GasUsed, respLogsMsg)
 	s.Require().NotEqual(int64(0), resp.GasWanted, respLogsMsg)
 	s.Require().NotEmpty(resp.Events, respLogsMsg)

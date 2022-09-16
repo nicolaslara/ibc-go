@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -34,6 +35,25 @@ func NewMsgTransfer(
 	}
 }
 
+func NewMsgTransferWithMetadata(
+	sourcePort, sourceChannel string,
+	token sdk.Coin, sender, receiver string,
+	timeoutHeight clienttypes.Height, timeoutTimestamp uint64,
+	metadata []byte,
+) *MsgTransfer {
+	fmt.Println("DEBUG: NewMsgTransferWithMetadata!")
+	return &MsgTransfer{
+		SourcePort:       sourcePort,
+		SourceChannel:    sourceChannel,
+		Token:            token,
+		Sender:           sender,
+		Receiver:         receiver,
+		TimeoutHeight:    timeoutHeight,
+		TimeoutTimestamp: timeoutTimestamp,
+		Metadata:         metadata,
+	}
+}
+
 // Route implements sdk.Msg
 func (MsgTransfer) Route() string {
 	return RouterKey
@@ -49,6 +69,7 @@ func (MsgTransfer) Type() string {
 // NOTE: The recipient addresses format is not validated as the format defined by
 // the chain is not known to IBC.
 func (msg MsgTransfer) ValidateBasic() error {
+	fmt.Println("DEBUG: validateBasic")
 	if err := host.PortIdentifierValidator(msg.SourcePort); err != nil {
 		return sdkerrors.Wrap(err, "invalid source port ID")
 	}
@@ -69,6 +90,7 @@ func (msg MsgTransfer) ValidateBasic() error {
 	if strings.TrimSpace(msg.Receiver) == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missing recipient address")
 	}
+	fmt.Println("DEBUG: validateBasic all good")
 	return ValidateIBCDenom(msg.Token.Denom)
 }
 

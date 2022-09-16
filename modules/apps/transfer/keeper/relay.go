@@ -59,6 +59,7 @@ func (k Keeper) SendTransfer(
 	receiver string,
 	timeoutHeight clienttypes.Height,
 	timeoutTimestamp uint64,
+	metadata []byte,
 ) error {
 	if !k.GetSendEnabled(ctx) {
 		return types.ErrSendDisabled
@@ -147,9 +148,10 @@ func (k Keeper) SendTransfer(
 			panic(fmt.Sprintf("cannot burn coins after a successful send to a module account: %v", err))
 		}
 	}
+	fmt.Println("DEBUG: RELAY")
 
-	packetData := types.NewFungibleTokenPacketData(
-		fullDenomPath, token.Amount.String(), sender.String(), receiver,
+	packetData := types.NewFungibleTokenPacketDataWithMetadata(
+		fullDenomPath, token.Amount.String(), sender.String(), receiver, metadata,
 	)
 
 	packet := channeltypes.NewPacket(
