@@ -10,6 +10,23 @@ import (
 	"github.com/strangelove-ventures/ibctest/test"
 )
 
+// This can be used to test sending with a packet enhanced with Metadata for different combinations of
+// versions.
+// To do this, first we need to build the versions and tag them:
+// > git checkout <the branch with the metadata implementation>
+// > docker build . -t local:latest
+// > git checkout v3.2.1
+// > docker build . -t local:v3.2.1
+//
+// Then we can run the tests:
+//
+//     CHAIN_IMAGE=local CHAIN_A_TAG="v3.2.1" CHAIN_B_TAG="v3.2.1" make e2e-test entrypoint=TransferTestSuite test=TestMsgTransfer_WithMetadata
+//     CHAIN_IMAGE=local CHAIN_A_TAG="v3.2.1" CHAIN_B_TAG="latest" make e2e-test entrypoint=TransferTestSuite test=TestMsgTransfer_WithMetadata
+//     CHAIN_IMAGE=local CHAIN_A_TAG="latest" CHAIN_B_TAG="v3.2.1" make e2e-test entrypoint=TransferTestSuite test=TestMsgTransfer_WithMetadata
+//     CHAIN_IMAGE=local CHAIN_A_TAG="latest" CHAIN_B_TAG="latest" make e2e-test entrypoint=TransferTestSuite test=TestMsgTransfer_WithMetadata
+//
+// All of the above combinations should pass.
+
 // TestMsgTransfer_WithMetadata will test sending IBC transfers from chainA to chainB
 // If the chains contain a version of FungibleTokenPacketData with metadata, both send and receive should succeed.
 // If one of the chains contains a version of FungibleTokenPacketData without metadata, then receiving a packet with
