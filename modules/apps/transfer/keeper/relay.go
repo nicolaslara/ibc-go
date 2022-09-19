@@ -148,7 +148,6 @@ func (k Keeper) SendTransfer(
 			panic(fmt.Sprintf("cannot burn coins after a successful send to a module account: %v", err))
 		}
 	}
-	fmt.Println("DEBUG: RELAY")
 
 	packetData := types.NewFungibleTokenPacketDataWithMetadata(
 		fullDenomPath, token.Amount.String(), sender.String(), receiver, metadata,
