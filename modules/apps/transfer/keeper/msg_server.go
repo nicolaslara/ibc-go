@@ -4,7 +4,7 @@ import (
 	"context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cosmos/ibc-go/v5/modules/apps/transfer/types"
+	"github.com/cosmos/ibc-go/v6/modules/apps/transfer/types"
 )
 
 var _ types.MsgServer = Keeper{}
@@ -17,6 +17,7 @@ func (k Keeper) Transfer(goCtx context.Context, msg *types.MsgTransfer) (*types.
 	if err != nil {
 		return nil, err
 	}
+
 	if err := k.SendTransfer(
 		ctx, msg.SourcePort, msg.SourceChannel, msg.Token, sender, msg.Receiver, msg.TimeoutHeight, msg.TimeoutTimestamp,
 		msg.Metadata,
