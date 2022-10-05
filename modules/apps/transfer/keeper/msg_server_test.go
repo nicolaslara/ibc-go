@@ -3,7 +3,7 @@ package keeper_test
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cosmos/ibc-go/v5/modules/apps/transfer/types"
+	"github.com/cosmos/ibc-go/v6/modules/apps/transfer/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgTransfer() {
@@ -54,6 +54,7 @@ func (suite *KeeperTestSuite) TestMsgTransfer() {
 			path.EndpointA.ChannelID,
 			coin, suite.chainA.SenderAccount.GetAddress().String(), suite.chainB.SenderAccount.GetAddress().String(),
 			suite.chainB.GetTimeoutHeight(), 0, // only use timeout height
+			[]byte("custom metadata"),
 		)
 
 		tc.malleate()
@@ -61,6 +62,7 @@ func (suite *KeeperTestSuite) TestMsgTransfer() {
 		res, err := suite.chainA.GetSimApp().TransferKeeper.Transfer(sdk.WrapSDKContext(suite.chainA.GetContext()), msg)
 
 		if tc.expPass {
+			suite.Require().NotEqual(res.Sequence, uint64(0))
 			suite.Require().NoError(err)
 			suite.Require().NotNil(res)
 		} else {
